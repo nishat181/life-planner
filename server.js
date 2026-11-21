@@ -1,10 +1,11 @@
-require('dotenv').config(); // must be the first line
+require('dotenv').config(); // must stay the first line
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('./db');
-const { router: authRouter } = require('./auth');
+const { router: authRouter, requireAuth } = require('./auth');  // changed: also brings in requireAuth
+const habitsRouter = require('./habits');                        // new line
 
 const app = express();
 const PORT = 3000;
@@ -14,6 +15,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
+app.use('/api/habits', requireAuth, habitsRouter);               // new line
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

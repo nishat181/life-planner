@@ -1,7 +1,38 @@
 <!DOCTYPE html>
-<html>
-<head><title>Life Planner</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Life Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
   <h1>Discipline Today, Freedom Tomorrow</h1>
+
+  <!-- Shown when logged out -->
+  <section id="auth-section" hidden>
+    <h2>Login or Register</h2>
+    <form id="auth-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password (min 8 characters)" required>
+      <button type="button" id="login-btn">Login</button>
+      <button type="button" id="register-btn">Register</button>
+    </form>
+    <p id="auth-error" class="error"></p>
+  </section>
+
+  <!-- Shown when logged in -->
+  <section id="app-section" hidden>
+    <p>Logged in as <strong id="user-email"></strong> <button id="logout-btn">Logout</button></p>
+
+    <h2>Habits</h2>
+    <form id="habit-form">
+      <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="habit-list"></ul>
+  </section>
+
+  <script src="app.js"></script>
 </body>
 </html>
