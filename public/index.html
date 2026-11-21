@@ -25,6 +25,24 @@
   <section id="app-section" hidden>
     <p>Logged in as <strong id="user-email"></strong> <button id="logout-btn">Logout</button></p>
 
+    <h2>Dashboard</h2>
+    <div class="cards">
+      <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
+      <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
+      <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">This month</div></div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-box"><canvas id="week-chart"></canvas></div>
+      <div class="chart-box"><canvas id="today-chart"></canvas></div>
+    </div>
+
+    <h3>Consistency (last 16 weeks)</h3>
+    <div class="heatmap" id="heatmap"></div>
+
+    <h3>Habit streaks</h3>
+    <ul id="streak-list"></ul>
+
     <h2>Habits</h2>
     <form id="habit-form">
       <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
@@ -33,6 +51,7 @@
     <ul id="habit-list"></ul>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

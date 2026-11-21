@@ -4,8 +4,9 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('./db');
-const { router: authRouter, requireAuth } = require('./auth');  // changed: also brings in requireAuth
-const habitsRouter = require('./habits');                        // new line
+const { router: authRouter, requireAuth } = require('./auth');
+const habitsRouter = require('./habits');
+const statsRouter = require('./stats');                          // new line
 
 const app = express();
 const PORT = 3000;
@@ -15,7 +16,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
-app.use('/api/habits', requireAuth, habitsRouter);               // new line
+app.use('/api/habits', requireAuth, habitsRouter);
+app.use('/api/stats', requireAuth, statsRouter);                 // new line
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
