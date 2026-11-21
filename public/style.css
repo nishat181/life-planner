@@ -83,3 +83,24 @@ li span { flex: 1; }
 @media (max-width: 520px) {
   .chart-row { grid-template-columns: 1fr; }
 }
+
+.cards { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+#tabs { display: flex; gap: 6px; margin: 16px 0; flex-wrap: wrap; }
+.tab { background: #151c12; color: #9fb596; }
+.tab.active { background: #a6e22e; color: #0b0f0a; }
+
+select {
+  padding: 8px;
+  margin: 4px 0;
+  background: #151c12;
+  color: #e6efe0;
+  border: 1px solid #2e3d28;
+  border-radius: 6px;
+}
+.expense-form { display: flex; flex-wrap: wrap; gap: 6px; }
+.expense-form input[type="number"] { width: 110px; }
+
+.exp-amount { font-weight: bold; color: #a6e22e; }
+.exp-meta { flex: 1; }
+.exp-meta small { color: #9fb596; }

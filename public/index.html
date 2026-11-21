@@ -25,30 +25,74 @@
   <section id="app-section" hidden>
     <p>Logged in as <strong id="user-email"></strong> <button id="logout-btn">Logout</button></p>
 
-    <h2>Dashboard</h2>
-    <div class="cards">
-      <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
-      <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
-      <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">This month</div></div>
+    <nav id="tabs">
+      <button class="tab active" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="habits">Habits</button>
+      <button class="tab" data-tab="expenses">Expenses</button>
+    </nav>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="tab-content">
+      <div class="cards">
+        <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
+        <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
+        <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">Habits this month</div></div>
+        <div class="card"><div class="num" id="month-spent">0.00</div><div class="label">Spent this month</div></div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-box"><canvas id="week-chart"></canvas></div>
+        <div class="chart-box"><canvas id="today-chart"></canvas></div>
+      </div>
+
+      <h3>Consistency (last 16 weeks)</h3>
+      <div class="heatmap" id="heatmap"></div>
+
+      <h3>Habit streaks</h3>
+      <ul id="streak-list"></ul>
     </div>
 
-    <div class="chart-row">
-      <div class="chart-box"><canvas id="week-chart"></canvas></div>
-      <div class="chart-box"><canvas id="today-chart"></canvas></div>
+    <!-- HABITS TAB -->
+    <div id="tab-habits" class="tab-content" hidden>
+      <h2>Habits</h2>
+      <form id="habit-form">
+        <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
+        <button type="submit">Add</button>
+      </form>
+      <ul id="habit-list"></ul>
     </div>
 
-    <h3>Consistency (last 16 weeks)</h3>
-    <div class="heatmap" id="heatmap"></div>
+    <!-- EXPENSES TAB -->
+    <div id="tab-expenses" class="tab-content" hidden>
+      <h2>Expenses</h2>
+      <form id="expense-form" class="expense-form">
+        <input type="number" id="exp-amount" placeholder="Amount" min="0.01" step="0.01" required>
+        <select id="exp-category">
+          <option>Food</option>
+          <option>Travel</option>
+          <option>Bills</option>
+          <option>Shopping</option>
+          <option>Health</option>
+          <option>Other</option>
+        </select>
+        <input type="text" id="exp-note" placeholder="Note (optional)" maxlength="100">
+        <input type="date" id="exp-date" required>
+        <button type="submit">Add</button>
+      </form>
+      <p id="expense-error" class="error"></p>
 
-    <h3>Habit streaks</h3>
-    <ul id="streak-list"></ul>
+      <div class="cards">
+        <div class="card"><div class="num" id="exp-month-total">0.00</div><div class="label">Spent this month</div></div>
+      </div>
 
-    <h2>Habits</h2>
-    <form id="habit-form">
-      <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
-      <button type="submit">Add</button>
-    </form>
-    <ul id="habit-list"></ul>
+      <div class="chart-row">
+        <div class="chart-box"><canvas id="expense-line-chart"></canvas></div>
+        <div class="chart-box"><canvas id="expense-pie-chart"></canvas></div>
+      </div>
+
+      <h3>Recent expenses</h3>
+      <ul id="expense-list"></ul>
+    </div>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

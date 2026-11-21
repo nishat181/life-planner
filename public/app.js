@@ -9,6 +9,9 @@ function today() {
   return `${d.getFullYear()}-${month}-${day}`;
 }
 
+// 1250 -> "12.50"
+const money = (cents) => (cents / 100).toFixed(2);
+
 // Sends a request to the server and returns { ok, data }
 async function api(url, method = 'GET', body) {
   const res = await fetch(url, {
@@ -20,6 +23,24 @@ async function api(url, method = 'GET', body) {
   return { ok: res.ok, data };
 }
 
+// ---------- tabs ----------
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.classList.toggle('active', t.dataset.tab === name);
+  });
+  document.querySelectorAll('.tab-content').forEach((s) => {
+    s.hidden = s.id !== 'tab-' + name;
+  });
+  // Load fresh data each time a tab opens
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'habits') loadHabits();
+  if (name === 'expenses') loadExpenses();
+}
+
+document.querySelectorAll('.tab').forEach((t) => {
+  t.addEventListener('click', () => showTab(t.dataset.tab));
+});
+
 // ---------- show the right screen ----------
 async function init() {
   const { ok, data } = await api('/api/auth/me');
@@ -27,8 +48,8 @@ async function init() {
     $('auth-section').hidden = true;
     $('app-section').hidden = false;
     $('user-email').textContent = data.email;
-    loadHabits();
-    loadStats();
+    $('exp-date').value = today();
+    showTab('dashboard');
   } else {
     $('auth-section').hidden = false;
     $('app-section').hidden = true;
@@ -71,7 +92,6 @@ async function loadHabits() {
     box.checked = habit.done;
     box.addEventListener('change', async () => {
       await api(`/api/habits/${habit.id}/toggle`, 'POST', { date: today() });
-      loadStats(); // refresh the dashboard
     });
 
     const name = document.createElement('span');
@@ -82,7 +102,6 @@ async function loadHabits() {
     del.addEventListener('click', async () => {
       await api(`/api/habits/${habit.id}`, 'DELETE');
       loadHabits();
-      loadStats();
     });
 
     li.append(box, name, del);
@@ -95,7 +114,6 @@ $('habit-form').addEventListener('submit', async (e) => {
   await api('/api/habits', 'POST', { name: $('habit-name').value });
   $('habit-name').value = '';
   loadHabits();
-  loadStats();
 });
 
 // ---------- dashboard ----------
@@ -104,20 +122,27 @@ let todayChart = null;
 
 Chart.defaults.color = '#9fb596';
 
-async function loadStats() {
-  const { ok, data } = await api(`/api/stats?date=${today()}`);
-  if (!ok) return;
+async function loadDashboard() {
+  const [stats, expenses] = await Promise.all([
+    api(`/api/stats?date=${today()}`),
+    api(`/api/expenses/summary?date=${today()}`),
+  ]);
 
-  $('current-streak').textContent = data.currentStreak;
-  $('longest-streak').textContent = data.longestStreak;
-  $('month-consistency').textContent = data.monthConsistency + '%';
-
-  renderCharts(data);
-  renderHeatmap(data.heatmap);
-  renderStreaks(data.habits);
+  if (stats.ok) {
+    const data = stats.data;
+    $('current-streak').textContent = data.currentStreak;
+    $('longest-streak').textContent = data.longestStreak;
+    $('month-consistency').textContent = data.monthConsistency + '%';
+    renderHabitCharts(data);
+    renderHeatmap(data.heatmap);
+    renderStreaks(data.habits);
+  }
+  if (expenses.ok) {
+    $('month-spent').textContent = money(expenses.data.monthTotal);
+  }
 }
 
-function renderCharts(data) {
+function renderHabitCharts(data) {
   // Bar chart: completion % for each of the last 7 days
   if (weekChart) weekChart.destroy();
   weekChart = new Chart($('week-chart'), {
@@ -199,5 +224,127 @@ function renderStreaks(habits) {
     list.appendChild(li);
   });
 }
+
+// ---------- expenses ----------
+let expenseLineChart = null;
+let expensePieChart = null;
+
+const CATEGORY_COLORS = {
+  Food: '#a6e22e',
+  Travel: '#66d9ef',
+  Bills: '#fd971f',
+  Shopping: '#f92672',
+  Health: '#ae81ff',
+  Other: '#9fb596',
+};
+
+async function loadExpenses() {
+  const [summary, list] = await Promise.all([
+    api(`/api/expenses/summary?date=${today()}`),
+    api('/api/expenses'),
+  ]);
+
+  if (summary.ok) {
+    $('exp-month-total').textContent = money(summary.data.monthTotal);
+    renderExpenseCharts(summary.data);
+  }
+  if (list.ok) renderExpenseList(list.data);
+}
+
+function renderExpenseCharts(data) {
+  // Line chart: spending per day, last 30 days
+  if (expenseLineChart) expenseLineChart.destroy();
+  expenseLineChart = new Chart($('expense-line-chart'), {
+    type: 'line',
+    data: {
+      labels: data.last30.map((d) => d.date.slice(5)), // "11-21"
+      datasets: [{
+        data: data.last30.map((d) => d.total / 100),
+        borderColor: '#a6e22e',
+        backgroundColor: 'rgba(166, 226, 46, 0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 2,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Daily spending (last 30 days)' },
+      },
+      scales: { x: { ticks: { maxTicksLimit: 8 } }, y: { beginAtZero: true } },
+    },
+  });
+
+  // Pie chart: this month by category
+  const hasData = data.byCategory.length > 0;
+  if (expensePieChart) expensePieChart.destroy();
+  expensePieChart = new Chart($('expense-pie-chart'), {
+    type: 'pie',
+    data: {
+      labels: hasData ? data.byCategory.map((c) => c.category) : ['No expenses yet'],
+      datasets: [{
+        data: hasData ? data.byCategory.map((c) => c.total / 100) : [1],
+        backgroundColor: hasData
+          ? data.byCategory.map((c) => CATEGORY_COLORS[c.category])
+          : ['#2a3524'],
+        borderWidth: 0,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'This month by category' } },
+    },
+  });
+}
+
+function renderExpenseList(expenses) {
+  const list = $('expense-list');
+  list.innerHTML = '';
+
+  expenses.forEach((e) => {
+    const li = document.createElement('li');
+
+    const meta = document.createElement('span');
+    meta.className = 'exp-meta';
+    meta.textContent = e.note ? `${e.category}: ${e.note}` : e.category;
+    const date = document.createElement('small');
+    date.textContent = ` ${e.date}`;
+    meta.appendChild(date);
+
+    const amount = document.createElement('span');
+    amount.className = 'exp-amount';
+    amount.textContent = money(e.amount_cents);
+
+    const del = document.createElement('button');
+    del.textContent = 'Delete';
+    del.addEventListener('click', async () => {
+      await api(`/api/expenses/${e.id}`, 'DELETE');
+      loadExpenses();
+    });
+
+    li.append(meta, amount, del);
+    list.appendChild(li);
+  });
+}
+
+$('expense-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const { ok, data } = await api('/api/expenses', 'POST', {
+    amount: $('exp-amount').value,
+    category: $('exp-category').value,
+    note: $('exp-note').value,
+    date: $('exp-date').value,
+  });
+  if (ok) {
+    $('expense-error').textContent = '';
+    $('exp-amount').value = '';
+    $('exp-note').value = '';
+    loadExpenses();
+  } else {
+    $('expense-error').textContent = data.error;
+  }
+});
 
 init();
