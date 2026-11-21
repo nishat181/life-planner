@@ -29,15 +29,27 @@
       <button class="tab active" data-tab="dashboard">Dashboard</button>
       <button class="tab" data-tab="habits">Habits</button>
       <button class="tab" data-tab="expenses">Expenses</button>
+      <button class="tab" data-tab="projects">Projects &amp; Skills</button>
     </nav>
 
     <!-- DASHBOARD TAB -->
     <div id="tab-dashboard" class="tab-content">
+      <h3>Countdowns</h3>
+      <div id="countdown-list" class="countdowns"></div>
+      <form id="countdown-form" class="inline-form">
+        <input type="text" id="cd-title" placeholder="Event, e.g. Exam" maxlength="60" required>
+        <input type="date" id="cd-date" required>
+        <button type="submit">Add countdown</button>
+      </form>
+      <p id="countdown-error" class="error"></p>
+
       <div class="cards">
         <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
         <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
         <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">Habits this month</div></div>
         <div class="card"><div class="num" id="month-spent">0.00</div><div class="label">Spent this month</div></div>
+        <div class="card"><div class="num" id="pending-work">0%</div><div class="label">Work pending</div></div>
+        <div class="card"><div class="num" id="efficiency">—</div><div class="label">Efficiency</div></div>
       </div>
 
       <div class="chart-row">
@@ -93,9 +105,38 @@
       <h3>Recent expenses</h3>
       <ul id="expense-list"></ul>
     </div>
+
+    <!-- PROJECTS & SKILLS TAB -->
+    <div id="tab-projects" class="tab-content" hidden>
+      <h2>Projects &amp; Skills</h2>
+      <form id="goal-form" class="inline-form">
+        <select id="goal-kind">
+          <option value="project">Project</option>
+          <option value="skill">Skill to learn</option>
+        </select>
+        <input type="text" id="goal-name" placeholder="Name, e.g. Planner app or SQL" maxlength="100" required>
+        <button type="submit">Add</button>
+      </form>
+      <p id="goal-error" class="error"></p>
+
+      <div class="cards">
+        <div class="card"><div class="num" id="goal-completion">0%</div><div class="label">Completed</div></div>
+        <div class="card"><div class="num" id="goal-pending">0%</div><div class="label">Pending</div></div>
+        <div class="card"><div class="num" id="goal-efficiency">—</div><div class="label">Efficiency (on time)</div></div>
+        <div class="card"><div class="num" id="goal-overdue">0</div><div class="label">Overdue tasks</div></div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-box"><canvas id="goal-bar-chart"></canvas></div>
+        <div class="chart-box"><canvas id="goal-doughnut-chart"></canvas></div>
+      </div>
+
+      <div id="goal-list"></div>
+    </div>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="extras.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

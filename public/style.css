@@ -104,3 +104,54 @@ select {
 .exp-amount { font-weight: bold; color: #a6e22e; }
 .exp-meta { flex: 1; }
 .exp-meta small { color: #9fb596; }
+
+.inline-form { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+
+li span.due { flex: none; font-size: 0.8rem; color: #9fb596; }
+li span.overdue { color: #ff6b6b; font-weight: bold; }
+
+.goal {
+  background: #10160d;
+  border: 1px solid #2e3d28;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0;
+}
+.goal-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.goal-head strong { flex: 1; }
+.goal-pct { color: #a6e22e; font-weight: bold; }
+.badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #2a3524;
+  color: #9fb596;
+}
+
+.progress { height: 8px; background: #2a3524; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+.progress-fill { height: 100%; background: #a6e22e; transition: width 0.3s; }
+
+.countdowns { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.countdown {
+  position: relative;
+  min-width: 130px;
+  background: #151c12;
+  border: 1px solid #2e3d28;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.countdown.past { opacity: 0.5; }
+.cd-num { font-size: 2rem; font-weight: bold; color: #a6e22e; }
+.cd-label { font-size: 0.8rem; color: #9fb596; }
+.cd-title { margin-top: 4px; font-weight: bold; }
+.countdown small { color: #9fb596; }
+.countdown button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 7px;
+  font-size: 0.7rem;
+  background: #2a3524;
+  color: #9fb596;
+}
