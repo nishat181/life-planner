@@ -155,3 +155,36 @@ li span.overdue { color: #ff6b6b; font-weight: bold; }
   background: #2a3524;
   color: #9fb596;
 }
+
+textarea {
+  padding: 8px;
+  margin: 4px 0;
+  width: 100%;
+  box-sizing: border-box;
+  background: #151c12;
+  color: #e6efe0;
+  border: 1px solid #2e3d28;
+  border-radius: 6px;
+  font-family: inherit;
+  resize: vertical;
+}
+.journal-form { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.hint { color: #9fb596; font-size: 0.85rem; }
+
+button.secondary { background: #2a3524; color: #9fb596; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.column { background: #10160d; border: 1px solid #2e3d28; border-radius: 10px; padding: 10px; min-height: 120px; }
+.column h4 { margin: 0 0 8px; color: #a6e22e; }
+.task-card { background: #151c12; border-radius: 8px; padding: 8px; margin: 6px 0; }
+.task-actions { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.task-actions button { padding: 3px 8px; font-size: 0.75rem; }
+
+@media (max-width: 600px) {
+  .board { grid-template-columns: 1fr; }
+}

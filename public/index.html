@@ -30,6 +30,8 @@
       <button class="tab" data-tab="habits">Habits</button>
       <button class="tab" data-tab="expenses">Expenses</button>
       <button class="tab" data-tab="projects">Projects &amp; Skills</button>
+      <button class="tab" data-tab="work">Work</button>
+      <button class="tab" data-tab="growth">Self Growth</button>
     </nav>
 
     <!-- DASHBOARD TAB -->
@@ -50,6 +52,9 @@
         <div class="card"><div class="num" id="month-spent">0.00</div><div class="label">Spent this month</div></div>
         <div class="card"><div class="num" id="pending-work">0%</div><div class="label">Work pending</div></div>
         <div class="card"><div class="num" id="efficiency">—</div><div class="label">Efficiency</div></div>
+        <div class="card"><div class="num" id="dash-work-hours">0.0</div><div class="label">Work hours (7 days)</div></div>
+        <div class="card"><div class="num" id="dash-study-hours">0.0</div><div class="label">Study hours (7 days)</div></div>
+        <div class="card"><div class="num" id="dash-mood">—</div><div class="label">Avg mood (7 days)</div></div>
       </div>
 
       <div class="chart-row">
@@ -133,10 +138,99 @@
 
       <div id="goal-list"></div>
     </div>
+
+    <!-- WORK TAB -->
+    <div id="tab-work" class="tab-content" hidden>
+      <h2>Work</h2>
+
+      <div class="cards">
+        <div class="card"><div class="num" id="work-today">0.0</div><div class="label">Hours today</div></div>
+        <div class="card"><div class="num" id="work-week">0.0</div><div class="label">Hours (7 days)</div></div>
+        <div class="card"><div class="num" id="work-done-week">0</div><div class="label">Tasks done (7 days)</div></div>
+        <div class="card"><div class="num" id="work-open">0</div><div class="label">Open tasks</div></div>
+      </div>
+
+      <h3>Daily work log</h3>
+      <form id="worklog-form" class="inline-form">
+        <input type="date" id="wl-date" required>
+        <input type="number" id="wl-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
+        <input type="text" id="wl-desc" placeholder="What did you work on?" maxlength="200" required>
+        <button type="submit">Add</button>
+      </form>
+      <p id="worklog-error" class="error"></p>
+
+      <div class="chart-row">
+        <div class="chart-box"><canvas id="work-hours-chart"></canvas></div>
+        <div class="chart-box"><canvas id="work-weeks-chart"></canvas></div>
+      </div>
+
+      <ul id="worklog-list"></ul>
+
+      <h3>Task board</h3>
+      <form id="worktask-form" class="inline-form">
+        <input type="text" id="wt-title" placeholder="New work task" maxlength="150" required>
+        <button type="submit">Add to To do</button>
+      </form>
+      <div class="board">
+        <div class="column"><h4 id="col-todo-title">To do</h4><div id="board-todo"></div></div>
+        <div class="column"><h4 id="col-doing-title">Doing</h4><div id="board-doing"></div></div>
+        <div class="column"><h4 id="col-done-title">Done</h4><div id="board-done"></div></div>
+      </div>
+    </div>
+
+    <!-- SELF GROWTH TAB -->
+    <div id="tab-growth" class="tab-content" hidden>
+      <h2>Self Growth</h2>
+
+      <div class="cards">
+        <div class="card"><div class="num" id="growth-mood">—</div><div class="label">Avg mood (7 days)</div></div>
+        <div class="card"><div class="num" id="growth-study">0.0</div><div class="label">Study hours (7 days)</div></div>
+        <div class="card"><div class="num" id="growth-entries">0</div><div class="label">Journal days (30 days)</div></div>
+      </div>
+
+      <h3>Daily journal</h3>
+      <form id="journal-form" class="journal-form">
+        <div class="inline-form">
+          <input type="date" id="jr-date" required>
+          <select id="jr-mood">
+            <option value="1">1 - Very low</option>
+            <option value="2">2 - Low</option>
+            <option value="3" selected>3 - Okay</option>
+            <option value="4">4 - Good</option>
+            <option value="5">5 - Great</option>
+          </select>
+        </div>
+        <textarea id="jr-note" placeholder="How was your day? What did you learn?" maxlength="500" rows="3"></textarea>
+        <button type="submit">Save entry</button>
+      </form>
+      <p class="hint">One entry per day: saving the same date again replaces it.</p>
+      <p id="journal-error" class="error"></p>
+
+      <h3>Study log</h3>
+      <form id="study-form" class="inline-form">
+        <input type="text" id="st-skill" placeholder="Skill, e.g. SQL" maxlength="60" required>
+        <input type="number" id="st-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
+        <input type="date" id="st-date" required>
+        <button type="submit">Add</button>
+      </form>
+      <p id="study-error" class="error"></p>
+
+      <div class="chart-row">
+        <div class="chart-box"><canvas id="mood-chart"></canvas></div>
+        <div class="chart-box"><canvas id="study-pie-chart"></canvas></div>
+      </div>
+
+      <h3>Recent journal entries</h3>
+      <ul id="journal-list"></ul>
+
+      <h3>Recent study sessions</h3>
+      <ul id="study-list"></ul>
+    </div>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="extras.js"></script>
+  <script src="work-growth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

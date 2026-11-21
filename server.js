@@ -8,8 +8,10 @@ const { router: authRouter, requireAuth } = require('./auth');
 const habitsRouter = require('./habits');
 const statsRouter = require('./stats');
 const expensesRouter = require('./expenses');
-const goalsRouter = require('./goals');                          // new line
-const countdownsRouter = require('./countdowns');                // new line
+const goalsRouter = require('./goals');
+const countdownsRouter = require('./countdowns');
+const workRouter = require('./work');                            // new line
+const growthRouter = require('./growth');                        // new line
 
 const app = express();
 const PORT = 3000;
@@ -22,8 +24,10 @@ app.use('/api/auth', authRouter);
 app.use('/api/habits', requireAuth, habitsRouter);
 app.use('/api/stats', requireAuth, statsRouter);
 app.use('/api/expenses', requireAuth, expensesRouter);
-app.use('/api/goals', requireAuth, goalsRouter);                 // new line
-app.use('/api/countdowns', requireAuth, countdownsRouter);       // new line
+app.use('/api/goals', requireAuth, goalsRouter);
+app.use('/api/countdowns', requireAuth, countdownsRouter);
+app.use('/api/work', requireAuth, workRouter);                   // new line
+app.use('/api/growth', requireAuth, growthRouter);               // new line
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

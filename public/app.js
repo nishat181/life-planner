@@ -36,6 +36,8 @@ function showTab(name) {
   if (name === "habits") loadHabits();
   if (name === "expenses") loadExpenses();
   if (name === "projects") loadGoals();
+  if (name === "work") loadWork(); // new line
+  if (name === "growth") loadGrowth(); // new line
 }
 
 document.querySelectorAll(".tab").forEach((t) => {
@@ -124,8 +126,9 @@ let todayChart = null;
 Chart.defaults.color = "#9fb596";
 
 async function loadDashboard() {
-  loadCountdowns(); // new line
-  loadGoalsSummary(); // new line
+  loadCountdowns();
+  loadGoalsSummary();
+  loadWorkGrowthSummary(); // new line
   const [stats, expenses] = await Promise.all([
     api(`/api/stats?date=${today()}`),
     api(`/api/expenses/summary?date=${today()}`),
