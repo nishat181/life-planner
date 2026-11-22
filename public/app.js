@@ -139,6 +139,8 @@ async function loadDashboard() {
     $("current-streak").textContent = data.currentStreak;
     $("longest-streak").textContent = data.longestStreak;
     $("month-consistency").textContent = data.monthConsistency + "%";
+        setRing('ring-habits-today', data.totalHabits ? Math.round((data.todayDone / data.totalHabits) * 100) : 0);   // new
+    setRing('ring-habits-month', data.monthConsistency);  
     renderHabitCharts(data);
     renderHeatmap(data.heatmap);
     renderStreaks(data.habits);

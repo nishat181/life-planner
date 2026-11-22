@@ -16,6 +16,8 @@ async function loadGoalsSummary() {
   if (!ok) return;
   byId('pending-work').textContent = data.summary.pendingPercent + '%';
   byId('efficiency').textContent = showEfficiency(data.summary.efficiency);
+  setRing('ring-projects', data.summary.completionPercent);                                                // new
+  setRing('ring-efficiency', data.summary.efficiency === null ? 0 : data.summary.efficiency);              // new
 }
 
 // Everything on the Projects & Skills tab

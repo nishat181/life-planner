@@ -4,231 +4,262 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Life Planner</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Oswald:wght@500;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Discipline Today, Freedom Tomorrow</h1>
 
   <!-- Shown when logged out -->
-  <section id="auth-section" hidden>
-    <h2>Login or Register</h2>
-    <form id="auth-form">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password (min 8 characters)" required>
-      <button type="button" id="login-btn">Login</button>
-      <button type="button" id="register-btn">Register</button>
-    </form>
-    <p id="auth-error" class="error"></p>
+  <section id="auth-section" class="auth-wrap" hidden>
+    <div class="auth-card">
+      <h1>Discipline <span>Over Everything</span></h1>
+      <p class="muted">Login or create your account</p>
+      <form id="auth-form">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password (min 8 characters)" required>
+        <div class="auth-buttons">
+          <button type="button" id="login-btn">Login</button>
+          <button type="button" id="register-btn" class="secondary">Register</button>
+        </div>
+      </form>
+      <p id="auth-error" class="error"></p>
+    </div>
   </section>
 
   <!-- Shown when logged in -->
-  <section id="app-section" hidden>
-    <p>Logged in as <strong id="user-email"></strong> <button id="logout-btn">Logout</button></p>
+  <div id="app-section" class="layout" hidden>
 
-    <nav id="tabs">
-      <button class="tab active" data-tab="dashboard">Dashboard</button>
-      <button class="tab" data-tab="habits">Habits</button>
-      <button class="tab" data-tab="expenses">Expenses</button>
-      <button class="tab" data-tab="projects">Projects &amp; Skills</button>
-      <button class="tab" data-tab="work">Work</button>
-      <button class="tab" data-tab="growth">Self Growth</button>
-    </nav>
+    <aside class="sidebar">
+      <div class="brand">DISCIPLINE<small>OVER EVERYTHING</small></div>
+      <nav id="tabs">
+        <button class="tab active" data-tab="dashboard"><span class="ico">📊</span><span>Dashboard</span></button>
+        <button class="tab" data-tab="habits"><span class="ico">✅</span><span>Habits</span></button>
+        <button class="tab" data-tab="expenses"><span class="ico">💰</span><span>Expenses</span></button>
+        <button class="tab" data-tab="projects"><span class="ico">🎯</span><span>Projects</span></button>
+        <button class="tab" data-tab="work"><span class="ico">💼</span><span>Work</span></button>
+        <button class="tab" data-tab="growth"><span class="ico">🌱</span><span>Growth</span></button>
+      </nav>
+      <p class="side-quote" id="side-quote"></p>
+    </aside>
 
-    <!-- DASHBOARD TAB -->
-    <div id="tab-dashboard" class="tab-content">
-      <h3>Countdowns</h3>
-      <div id="countdown-list" class="countdowns"></div>
-      <form id="countdown-form" class="inline-form">
-        <input type="text" id="cd-title" placeholder="Event, e.g. Exam" maxlength="60" required>
-        <input type="date" id="cd-date" required>
-        <button type="submit">Add countdown</button>
-      </form>
-      <p id="countdown-error" class="error"></p>
-
-      <div class="cards">
-        <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
-        <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
-        <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">Habits this month</div></div>
-        <div class="card"><div class="num" id="month-spent">0.00</div><div class="label">Spent this month</div></div>
-        <div class="card"><div class="num" id="pending-work">0%</div><div class="label">Work pending</div></div>
-        <div class="card"><div class="num" id="efficiency">—</div><div class="label">Efficiency</div></div>
-        <div class="card"><div class="num" id="dash-work-hours">0.0</div><div class="label">Work hours (7 days)</div></div>
-        <div class="card"><div class="num" id="dash-study-hours">0.0</div><div class="label">Study hours (7 days)</div></div>
-        <div class="card"><div class="num" id="dash-mood">—</div><div class="label">Avg mood (7 days)</div></div>
+    <main class="main">
+      <div class="topbar">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="secondary">Logout</button>
       </div>
 
-      <div class="chart-row">
-        <div class="chart-box"><canvas id="week-chart"></canvas></div>
-        <div class="chart-box"><canvas id="today-chart"></canvas></div>
-      </div>
-
-      <h3>Consistency (last 16 weeks)</h3>
-      <div class="heatmap" id="heatmap"></div>
-
-      <h3>Habit streaks</h3>
-      <ul id="streak-list"></ul>
-    </div>
-
-    <!-- HABITS TAB -->
-    <div id="tab-habits" class="tab-content" hidden>
-      <h2>Habits</h2>
-      <form id="habit-form">
-        <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
-        <button type="submit">Add</button>
-      </form>
-      <ul id="habit-list"></ul>
-    </div>
-
-    <!-- EXPENSES TAB -->
-    <div id="tab-expenses" class="tab-content" hidden>
-      <h2>Expenses</h2>
-      <form id="expense-form" class="expense-form">
-        <input type="number" id="exp-amount" placeholder="Amount" min="0.01" step="0.01" required>
-        <select id="exp-category">
-          <option>Food</option>
-          <option>Travel</option>
-          <option>Bills</option>
-          <option>Shopping</option>
-          <option>Health</option>
-          <option>Other</option>
-        </select>
-        <input type="text" id="exp-note" placeholder="Note (optional)" maxlength="100">
-        <input type="date" id="exp-date" required>
-        <button type="submit">Add</button>
-      </form>
-      <p id="expense-error" class="error"></p>
-
-      <div class="cards">
-        <div class="card"><div class="num" id="exp-month-total">0.00</div><div class="label">Spent this month</div></div>
-      </div>
-
-      <div class="chart-row">
-        <div class="chart-box"><canvas id="expense-line-chart"></canvas></div>
-        <div class="chart-box"><canvas id="expense-pie-chart"></canvas></div>
-      </div>
-
-      <h3>Recent expenses</h3>
-      <ul id="expense-list"></ul>
-    </div>
-
-    <!-- PROJECTS & SKILLS TAB -->
-    <div id="tab-projects" class="tab-content" hidden>
-      <h2>Projects &amp; Skills</h2>
-      <form id="goal-form" class="inline-form">
-        <select id="goal-kind">
-          <option value="project">Project</option>
-          <option value="skill">Skill to learn</option>
-        </select>
-        <input type="text" id="goal-name" placeholder="Name, e.g. Planner app or SQL" maxlength="100" required>
-        <button type="submit">Add</button>
-      </form>
-      <p id="goal-error" class="error"></p>
-
-      <div class="cards">
-        <div class="card"><div class="num" id="goal-completion">0%</div><div class="label">Completed</div></div>
-        <div class="card"><div class="num" id="goal-pending">0%</div><div class="label">Pending</div></div>
-        <div class="card"><div class="num" id="goal-efficiency">—</div><div class="label">Efficiency (on time)</div></div>
-        <div class="card"><div class="num" id="goal-overdue">0</div><div class="label">Overdue tasks</div></div>
-      </div>
-
-      <div class="chart-row">
-        <div class="chart-box"><canvas id="goal-bar-chart"></canvas></div>
-        <div class="chart-box"><canvas id="goal-doughnut-chart"></canvas></div>
-      </div>
-
-      <div id="goal-list"></div>
-    </div>
-
-    <!-- WORK TAB -->
-    <div id="tab-work" class="tab-content" hidden>
-      <h2>Work</h2>
-
-      <div class="cards">
-        <div class="card"><div class="num" id="work-today">0.0</div><div class="label">Hours today</div></div>
-        <div class="card"><div class="num" id="work-week">0.0</div><div class="label">Hours (7 days)</div></div>
-        <div class="card"><div class="num" id="work-done-week">0</div><div class="label">Tasks done (7 days)</div></div>
-        <div class="card"><div class="num" id="work-open">0</div><div class="label">Open tasks</div></div>
-      </div>
-
-      <h3>Daily work log</h3>
-      <form id="worklog-form" class="inline-form">
-        <input type="date" id="wl-date" required>
-        <input type="number" id="wl-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
-        <input type="text" id="wl-desc" placeholder="What did you work on?" maxlength="200" required>
-        <button type="submit">Add</button>
-      </form>
-      <p id="worklog-error" class="error"></p>
-
-      <div class="chart-row">
-        <div class="chart-box"><canvas id="work-hours-chart"></canvas></div>
-        <div class="chart-box"><canvas id="work-weeks-chart"></canvas></div>
-      </div>
-
-      <ul id="worklog-list"></ul>
-
-      <h3>Task board</h3>
-      <form id="worktask-form" class="inline-form">
-        <input type="text" id="wt-title" placeholder="New work task" maxlength="150" required>
-        <button type="submit">Add to To do</button>
-      </form>
-      <div class="board">
-        <div class="column"><h4 id="col-todo-title">To do</h4><div id="board-todo"></div></div>
-        <div class="column"><h4 id="col-doing-title">Doing</h4><div id="board-doing"></div></div>
-        <div class="column"><h4 id="col-done-title">Done</h4><div id="board-done"></div></div>
-      </div>
-    </div>
-
-    <!-- SELF GROWTH TAB -->
-    <div id="tab-growth" class="tab-content" hidden>
-      <h2>Self Growth</h2>
-
-      <div class="cards">
-        <div class="card"><div class="num" id="growth-mood">—</div><div class="label">Avg mood (7 days)</div></div>
-        <div class="card"><div class="num" id="growth-study">0.0</div><div class="label">Study hours (7 days)</div></div>
-        <div class="card"><div class="num" id="growth-entries">0</div><div class="label">Journal days (30 days)</div></div>
-      </div>
-
-      <h3>Daily journal</h3>
-      <form id="journal-form" class="journal-form">
-        <div class="inline-form">
-          <input type="date" id="jr-date" required>
-          <select id="jr-mood">
-            <option value="1">1 - Very low</option>
-            <option value="2">2 - Low</option>
-            <option value="3" selected>3 - Okay</option>
-            <option value="4">4 - Good</option>
-            <option value="5">5 - Great</option>
-          </select>
+      <!-- DASHBOARD TAB -->
+      <div id="tab-dashboard" class="tab-content">
+        <div class="hero">
+          <h1>Discipline today,<br><span>Freedom tomorrow</span></h1>
+          <p id="hero-quote"></p>
+          <p class="hero-date" id="hero-date"></p>
         </div>
-        <textarea id="jr-note" placeholder="How was your day? What did you learn?" maxlength="500" rows="3"></textarea>
-        <button type="submit">Save entry</button>
-      </form>
-      <p class="hint">One entry per day: saving the same date again replaces it.</p>
-      <p id="journal-error" class="error"></p>
 
-      <h3>Study log</h3>
-      <form id="study-form" class="inline-form">
-        <input type="text" id="st-skill" placeholder="Skill, e.g. SQL" maxlength="60" required>
-        <input type="number" id="st-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
-        <input type="date" id="st-date" required>
-        <button type="submit">Add</button>
-      </form>
-      <p id="study-error" class="error"></p>
+        <h3>Modules</h3>
+        <div class="modules">
+          <div class="module"><div class="ring" id="ring-habits-today"><span class="ring-value">0%</span></div><div class="module-name">Habits today</div></div>
+          <div class="module"><div class="ring" id="ring-habits-month"><span class="ring-value">0%</span></div><div class="module-name">Habits this month</div></div>
+          <div class="module"><div class="ring" id="ring-projects"><span class="ring-value">0%</span></div><div class="module-name">Work completed</div></div>
+          <div class="module"><div class="ring" id="ring-efficiency"><span class="ring-value">0%</span></div><div class="module-name">Efficiency</div></div>
+        </div>
 
-      <div class="chart-row">
-        <div class="chart-box"><canvas id="mood-chart"></canvas></div>
-        <div class="chart-box"><canvas id="study-pie-chart"></canvas></div>
+        <h3>Countdowns</h3>
+        <div id="countdown-list" class="countdowns"></div>
+        <form id="countdown-form" class="inline-form">
+          <input type="text" id="cd-title" placeholder="Event, e.g. Exam" maxlength="60" required>
+          <input type="date" id="cd-date" required>
+          <button type="submit">Add countdown</button>
+        </form>
+        <p id="countdown-error" class="error"></p>
+
+        <h3>Overview</h3>
+        <div class="cards">
+          <div class="card"><div class="num" id="current-streak">0</div><div class="label">Current streak (days)</div></div>
+          <div class="card"><div class="num" id="longest-streak">0</div><div class="label">Longest streak (days)</div></div>
+          <div class="card"><div class="num" id="month-consistency">0%</div><div class="label">Habits this month</div></div>
+          <div class="card"><div class="num" id="month-spent">0.00</div><div class="label">Spent this month</div></div>
+          <div class="card"><div class="num" id="pending-work">0%</div><div class="label">Work pending</div></div>
+          <div class="card"><div class="num" id="efficiency">—</div><div class="label">Efficiency</div></div>
+          <div class="card"><div class="num" id="dash-work-hours">0.0</div><div class="label">Work hours (7 days)</div></div>
+          <div class="card"><div class="num" id="dash-study-hours">0.0</div><div class="label">Study hours (7 days)</div></div>
+          <div class="card"><div class="num" id="dash-mood">—</div><div class="label">Avg mood (7 days)</div></div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-box"><canvas id="week-chart"></canvas></div>
+          <div class="chart-box"><canvas id="today-chart"></canvas></div>
+        </div>
+
+        <h3>Consistency (last 16 weeks)</h3>
+        <div class="panel"><div class="heatmap" id="heatmap"></div></div>
+
+        <h3>Habit streaks</h3>
+        <ul id="streak-list"></ul>
       </div>
 
-      <h3>Recent journal entries</h3>
-      <ul id="journal-list"></ul>
+      <!-- HABITS TAB -->
+      <div id="tab-habits" class="tab-content" hidden>
+        <h2>Habits</h2>
+        <form id="habit-form" class="inline-form">
+          <input type="text" id="habit-name" placeholder="New habit, e.g. Workout" maxlength="100" required>
+          <button type="submit">Add</button>
+        </form>
+        <ul id="habit-list"></ul>
+      </div>
 
-      <h3>Recent study sessions</h3>
-      <ul id="study-list"></ul>
-    </div>
-  </section>
+      <!-- EXPENSES TAB -->
+      <div id="tab-expenses" class="tab-content" hidden>
+        <h2>Expenses</h2>
+        <form id="expense-form" class="expense-form">
+          <input type="number" id="exp-amount" placeholder="Amount" min="0.01" step="0.01" required>
+          <select id="exp-category">
+            <option>Food</option>
+            <option>Travel</option>
+            <option>Bills</option>
+            <option>Shopping</option>
+            <option>Health</option>
+            <option>Other</option>
+          </select>
+          <input type="text" id="exp-note" placeholder="Note (optional)" maxlength="100">
+          <input type="date" id="exp-date" required>
+          <button type="submit">Add</button>
+        </form>
+        <p id="expense-error" class="error"></p>
+
+        <div class="cards">
+          <div class="card"><div class="num" id="exp-month-total">0.00</div><div class="label">Spent this month</div></div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-box"><canvas id="expense-line-chart"></canvas></div>
+          <div class="chart-box"><canvas id="expense-pie-chart"></canvas></div>
+        </div>
+
+        <h3>Recent expenses</h3>
+        <ul id="expense-list"></ul>
+      </div>
+
+      <!-- PROJECTS & SKILLS TAB -->
+      <div id="tab-projects" class="tab-content" hidden>
+        <h2>Projects &amp; Skills</h2>
+        <form id="goal-form" class="inline-form">
+          <select id="goal-kind">
+            <option value="project">Project</option>
+            <option value="skill">Skill to learn</option>
+          </select>
+          <input type="text" id="goal-name" placeholder="Name, e.g. Planner app or SQL" maxlength="100" required>
+          <button type="submit">Add</button>
+        </form>
+        <p id="goal-error" class="error"></p>
+
+        <div class="cards">
+          <div class="card"><div class="num" id="goal-completion">0%</div><div class="label">Completed</div></div>
+          <div class="card"><div class="num" id="goal-pending">0%</div><div class="label">Pending</div></div>
+          <div class="card"><div class="num" id="goal-efficiency">—</div><div class="label">Efficiency (on time)</div></div>
+          <div class="card"><div class="num" id="goal-overdue">0</div><div class="label">Overdue tasks</div></div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-box"><canvas id="goal-bar-chart"></canvas></div>
+          <div class="chart-box"><canvas id="goal-doughnut-chart"></canvas></div>
+        </div>
+
+        <div id="goal-list"></div>
+      </div>
+
+      <!-- WORK TAB -->
+      <div id="tab-work" class="tab-content" hidden>
+        <h2>Work</h2>
+
+        <div class="cards">
+          <div class="card"><div class="num" id="work-today">0.0</div><div class="label">Hours today</div></div>
+          <div class="card"><div class="num" id="work-week">0.0</div><div class="label">Hours (7 days)</div></div>
+          <div class="card"><div class="num" id="work-done-week">0</div><div class="label">Tasks done (7 days)</div></div>
+          <div class="card"><div class="num" id="work-open">0</div><div class="label">Open tasks</div></div>
+        </div>
+
+        <h3>Daily work log</h3>
+        <form id="worklog-form" class="inline-form">
+          <input type="date" id="wl-date" required>
+          <input type="number" id="wl-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
+          <input type="text" id="wl-desc" placeholder="What did you work on?" maxlength="200" required>
+          <button type="submit">Add</button>
+        </form>
+        <p id="worklog-error" class="error"></p>
+
+        <div class="chart-row">
+          <div class="chart-box"><canvas id="work-hours-chart"></canvas></div>
+          <div class="chart-box"><canvas id="work-weeks-chart"></canvas></div>
+        </div>
+
+        <ul id="worklog-list"></ul>
+
+        <h3>Task board</h3>
+        <form id="worktask-form" class="inline-form">
+          <input type="text" id="wt-title" placeholder="New work task" maxlength="150" required>
+          <button type="submit">Add to To do</button>
+        </form>
+        <div class="board">
+          <div class="column"><h4 id="col-todo-title">To do</h4><div id="board-todo"></div></div>
+          <div class="column"><h4 id="col-doing-title">Doing</h4><div id="board-doing"></div></div>
+          <div class="column"><h4 id="col-done-title">Done</h4><div id="board-done"></div></div>
+        </div>
+      </div>
+
+      <!-- SELF GROWTH TAB -->
+      <div id="tab-growth" class="tab-content" hidden>
+        <h2>Self Growth</h2>
+
+        <div class="cards">
+          <div class="card"><div class="num" id="growth-mood">—</div><div class="label">Avg mood (7 days)</div></div>
+          <div class="card"><div class="num" id="growth-study">0.0</div><div class="label">Study hours (7 days)</div></div>
+          <div class="card"><div class="num" id="growth-entries">0</div><div class="label">Journal days (30 days)</div></div>
+        </div>
+
+        <h3>Daily journal</h3>
+        <form id="journal-form" class="journal-form">
+          <div class="inline-form">
+            <input type="date" id="jr-date" required>
+            <select id="jr-mood">
+              <option value="1">1 - Very low</option>
+              <option value="2">2 - Low</option>
+              <option value="3" selected>3 - Okay</option>
+              <option value="4">4 - Good</option>
+              <option value="5">5 - Great</option>
+            </select>
+          </div>
+          <textarea id="jr-note" placeholder="How was your day? What did you learn?" maxlength="500" rows="3"></textarea>
+          <button type="submit">Save entry</button>
+        </form>
+        <p class="hint">One entry per day: saving the same date again replaces it.</p>
+        <p id="journal-error" class="error"></p>
+
+        <h3>Study log</h3>
+        <form id="study-form" class="inline-form">
+          <input type="text" id="st-skill" placeholder="Skill, e.g. SQL" maxlength="60" required>
+          <input type="number" id="st-hours" placeholder="Hours" min="0.25" max="24" step="0.25" required>
+          <input type="date" id="st-date" required>
+          <button type="submit">Add</button>
+        </form>
+        <p id="study-error" class="error"></p>
+
+        <div class="chart-row">
+          <div class="chart-box"><canvas id="mood-chart"></canvas></div>
+          <div class="chart-box"><canvas id="study-pie-chart"></canvas></div>
+        </div>
+
+        <h3>Recent journal entries</h3>
+        <ul id="journal-list"></ul>
+
+        <h3>Recent study sessions</h3>
+        <ul id="study-list"></ul>
+      </div>
+    </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="ui.js"></script>
   <script src="extras.js"></script>
   <script src="work-growth.js"></script>
   <script src="app.js"></script>
